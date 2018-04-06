@@ -7,7 +7,13 @@ var Message = require('../models/message');
 
 // Get Homepage
 router.get('/', ensureAuthenticated, function(req, res){
-	res.render('index',{user:req.user.username});
+	Message.find({ toUser : req.user._id})
+	       .populate('fromUser')
+	       .exec()
+	       .then( (messages) => {
+					console.log(messages);
+					res.render('index',{user:req.user.username , messages: messages});
+	});
 });
 
 router.post('/sendmessage', ensureAuthenticated, function(req, res){

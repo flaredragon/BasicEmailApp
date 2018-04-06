@@ -1,2 +1,8 @@
  <h2 class="page-header">Dashboard</h2>
-<p>Welcome to your dashboard {{user}}</p>  
+<p>Welcome to your dashboard {{user}}</p> 
+{{#each messages}}
+<p>Subject : {{this.subject}}</p>
+<p>Message : {{this.content}}</p>
+<p>From : {{this.fromUser.username}}</p>
+<br>
+{{/each}} 
