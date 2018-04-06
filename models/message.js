@@ -11,6 +11,10 @@ var MessageSchema = mongoose.Schema({
 	toUser: {
 		type: mongoose.Schema.Types.ObjectId,
             	ref: 'User'
+	},
+	fromUser : {
+		type: mongoose.Schema.Types.ObjectId,
+            	ref: 'User'
 	}
 });
 
