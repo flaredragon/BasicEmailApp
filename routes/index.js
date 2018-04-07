@@ -14,11 +14,12 @@ router.get('/', ensureAuthenticated, function(req, res){
 					if(err)
 					console.log(err);
 
-					console.log(messages);
+					//console.log(messages);
 					res.render('index',{user:req.user.username , messages: messages});
 	});
 });
 
+//Sending Message
 router.post('/sendmessage', ensureAuthenticated, function(req, res){
 	var subject  = req.body.subject,
 	    content  = req.body.content,
@@ -46,12 +47,15 @@ router.post('/sendmessage', ensureAuthenticated, function(req, res){
 					});
 				msg.save(function(err,saved){
 					if(err)
-					throw err;
+					{
+						req.flash('error_msg','Content is Required');
+						res.redirect('/');
+					}
 					else
 					{
-					console.log(saved);
-					req.flash('success_msg', 'Message Sent');
-					res.redirect('/');
+						console.log(saved);
+						req.flash('success_msg', 'Message Sent');
+						res.redirect('/');
 					}
 				    });
 				}
@@ -62,12 +66,14 @@ router.post('/sendmessage', ensureAuthenticated, function(req, res){
 			        res.redirect('/');
 			  }
 		})
-		.catch((error) => {
+		.catch((err) => {
 			console.log(err);
+			req.flash('error_msg','Invalid Request');
 			res.redirect('/');
 	});	        	
 });
 
+//Blocking a User
 router.put('/block/:user', ensureAuthenticated, function(req, res){
 	var username = req.params.user;
 	console.log(username);
@@ -81,36 +87,33 @@ router.put('/block/:user', ensureAuthenticated, function(req, res){
 		console.log(x);
 		if(user.isBlockedBy.indexOf(x)>-1)
 			{
-			req.flash('success_msg','Already Blocked'); 
-			res.render('index',{user:req.user.username});
+			res.render('index',{user:req.user.username,success_msg:'Already Blocked'});
 			}
 		else {
-			 user.isBlockedBy.push(x);
-				console.log(user.isBlockedBy);
-			var finalList = user.isBlockedBy;
+			user.isBlockedBy.push(x);
+			//console.log(user.isBlockedBy);
+			var finalList = user.isBlockedBy; //List of Users has been blocked by.
 			User.where({ _id: user._id }).update({ $set: { isBlockedBy: finalList }})
 			.then( (response,err) => {
 			//console.log(finalList);
 			if(err)
 			throw(err);			
-			req.flash('success_msg','Blocked'); 
-			res.render('index');
+			res.render('index',{user:req.user.username,success_msg:'Blocked'});
 			});
 		}
 	})
 	.catch((error) => {
 			console.log(err);
-			req.flash('error_msg','Invalid'); 
-			res.render('index');
+			res.render('index',{user:req.user.username,error_msg:'Invalid Request'});
 	});	        	
 });
 
-
+//Authentication Check
 function ensureAuthenticated(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	} else {
-		//req.flash('error_msg','You are not logged in');
+		req.flash('error_msg','You are not logged in');
 		res.redirect('/users/login');
 	}
 }
