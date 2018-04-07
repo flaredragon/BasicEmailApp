@@ -10,8 +10,13 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://akash:akash@ds237489.mlab.com:37489/cashpositive');
-var db = mongoose.connection;
+mongoose.connect('mongodb://akash:akash@ds237489.mlab.com:37489/cashpositive')
+	.then((db,err) => {
+		if(err)
+		throw err;		
+		console.log("Connected to DB");
+	})
+	.catch((err) => console.log(err));
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -76,7 +81,7 @@ app.use(function (req, res, next) {
 
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/', users);
 
 // Set Port
 app.set('port', (process.env.PORT || 3000));

@@ -33,7 +33,8 @@ router.post('/sendmessage', ensureAuthenticated, function(req, res){
 			if(products)
 			  { 
 				if(req.user.isBlockedBy.indexOf(products._id.toString())>-1)
-				{ 
+				{ 	
+					console.log(req.user.username + " is blocked by " + products.username);
 					req.flash('error_msg', 'Invalid Request'); //Blocked User
 					res.redirect('/');
 				}
@@ -68,7 +69,7 @@ router.post('/sendmessage', ensureAuthenticated, function(req, res){
 		})
 		.catch((err) => {
 			console.log(err);
-			req.flash('error_msg','Invalid Request');
+			req.flash('error_msg','Something Went Wrong');
 			res.redirect('/');
 	});	        	
 });
@@ -104,7 +105,7 @@ router.put('/block/:user', ensureAuthenticated, function(req, res){
 	})
 	.catch((error) => {
 			console.log(err);
-			res.render('index',{user:req.user.username,error_msg:'Invalid Request'});
+			res.render('index',{user:req.user.username,error_msg:'Something Went Wrong'});
 	});	        	
 });
 
@@ -114,7 +115,7 @@ function ensureAuthenticated(req, res, next){
 		return next();
 	} else {
 		//req.flash('error_msg','You are not logged in');
-		res.redirect('/users/login');
+		res.redirect('/login');
 	}
 }
 

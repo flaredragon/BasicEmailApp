@@ -1,8 +1,13 @@
  <h2 class="page-header">Dashboard</h2>
 <p>Welcome to your dashboard {{user}}</p> 
+<br>
+<p>Your Inbox - </p>
+<br>
 {{#each messages}}
+<div class = "container">
 <p>Subject : {{this.subject}}</p>
 <p>Message : {{this.content}}</p>
 <p>From : {{this.fromUser.username}}</p>
 <br>
+</div>
 {{/each}} 
