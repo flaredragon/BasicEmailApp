@@ -6,7 +6,8 @@ var MessageSchema = mongoose.Schema({
 		index:true
 	},
 	content: {
-		type: String
+		type: String,
+		required: true
 	},
 	toUser: {
 		type: mongoose.Schema.Types.ObjectId,
